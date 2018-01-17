@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <!-- Chemins  sont stockés les fichiers de log -->
+    <property name="LOG_FOLDER" value="C:/Temp/" />
+    <!-- Nom du fichier de log, sans son extension -->
+    <property name="LOG_FILENAME" value="toto.log" />
+    <!-- Environnement local/autres -->
+    <property name="LOG_ENV" value="${log.env}" />
+
+
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+
+    <!-- Appender Logging dans un fichier : définition d'un type d'écriture
+        de log -->
+    <appender name="ROLLING"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FOLDER}/${LOG_FILENAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Archivage journalier en zip -->
+            <fileNamePattern>${LOG_FOLDER}/${LOG_FILENAME}-%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy	class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- ou si la taille du fichier de logs dÃƒÂ©passe 100MB -->
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <charset>utf-8</charset>
+            <!-- Pattern de log -->
+            <!-- %d{yyyy/MM/dd HH:mm:ss.SSS,Europe/Paris} : représente la date -->
+            <!-- [%thread] : le nom du thread déclenchant la log -->
+            <!-- %-5level : le niveau de log (INFO, DEBUG, ERROR) -->
+            <!-- %logger : la classe Java déclenchant la log -->
+            <!-- %msg%n : le message que vous logguez dans votre classe Java -->
+            <pattern>%d{yyyy/MM/dd HH:mm:ss.SSS,Europe/Paris} [%thread] [%X{sessionId}] [%-5level] %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Appender Logging dans la console : définition d'un type d'écriture
+        de log -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>utf-8</charset>
+            <pattern>%clr(%d{yyyy/MM/dd HH:mm:ss.SSS,Europe/Paris}){faint} %clr([%15.15thread]){faint} [%X{sessionId}] [%highlight(%-5level)] %cyan(%-45.45logger{44}) %clr(:){faint} %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="fr.allianz.t2" level="DEBUG" />
+
+
+
+
+    <root level="INFO">
+        <!-- Activation de l'appender ROLLING : on veut logger dans un fichier -->
+        <appender-ref ref="ROLLING" />
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>
